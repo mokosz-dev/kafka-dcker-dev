@@ -1,4 +1,4 @@
-# kafka-dcker-dev
+# kafka-dev
 ```
 version: '3'
 services:
