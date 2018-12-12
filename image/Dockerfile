@@ -45,6 +45,6 @@ ENV PATH=$PATH:/opt/trifecta-ui/bin:/opt/kafka/bin:/opt/zookeeper/bin
 EXPOSE 2181 9092 9000
 VOLUME ["/data/zookeeper", "/var/zookeeper/datalog", "/var/zookeeper/logs", "/var/kafka/logs", "/data/kafka", "/var/trifecta-ui/logs"]
 
-CMD ["/bin/processes-go.sh"]
+CMD ["processes-go.sh"]
 
 
