@@ -3,7 +3,6 @@ FROM mokosz/os-alpine:1
 LABEL mintainer ="Rafał Kałuziński <rafa.kaluzinski@gmail.com>"
 LABEL description ="kafka 2.11-2.1.0 & zookeeper 3.4.12 & trifecta-ui 0.22.0rc8b-0.10.1.0"
 
-
 COPY files/processes-go.sh /bin
 COPY files/create-topics.sh /bin
 COPY files/trifecta-add-groups.sh /bin
