@@ -32,7 +32,10 @@ RUN apk add screen && \
     ln -s /var/kafka/logs /opt/kafka/logs && \
     ln -s /opt/trifecta-ui/conf/ /etc/trifecta-ui && \
     mkdir -p /var/trifecta-ui/logs && \
-    ln -s /var/trifecta-ui/logs /opt/trifecta-ui/logs
+    ln -s /var/trifecta-ui/logs /opt/trifecta-ui/logs && \
+    chmod 777 /bin/processes-go.sh && \
+    chmod 777 /bin/create-topics.sh && \
+    chmod 777 /bin/trifecta-add-groups.sh
 
 COPY files/zoo.cfg /opt/zookeeper/conf/
 COPY files/server.properties /opt/kafka/config/
@@ -42,6 +45,6 @@ ENV PATH=$PATH:/opt/trifecta-ui/bin:/opt/kafka/bin:/opt/zookeeper/bin
 EXPOSE 2181 9092 9000
 VOLUME ["/data/zookeeper", "/var/zookeeper/datalog", "/var/zookeeper/logs", "/var/kafka/logs", "/data/kafka", "/var/trifecta-ui/logs"]
 
-CMD ["processes-go.sh"]
+CMD ["/bin/processes-go.sh"]
 
 
