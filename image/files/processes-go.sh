@@ -33,6 +33,8 @@ fi
 
 screen -dmS createTopicsScreen create-topics.sh
 
+screen -dmS logConsumerScreen log-consumer-groups.sh
+
 count=0
 timeout=600
 while [ ! -f /var/kafka/logs/server.log ] && [ ! -f /var/zookeeper/logs/zookeeper.out ] && [ ! -f /var/trifecta-ui/logs/application.log ]; do
@@ -44,4 +46,4 @@ while [ ! -f /var/kafka/logs/server.log ] && [ ! -f /var/zookeeper/logs/zookeepe
     fi
 done
 
-tail -f /var/kafka/logs/server.log -f /var/zookeeper/logs/zookeeper.out -f /var/trifecta-ui/logs/application.log
+tail -f /var/kafka/logs/server.log -f /var/zookeeper/logs/zookeeper.out -f /var/trifecta-ui/logs/application.log -f /var/kafka/logs/consumer_groups.log

@@ -6,7 +6,7 @@ LABEL description ="kafka 2.11-2.1.0 & zookeeper 3.4.12 & trifecta-ui 0.22.0rc8b
 COPY files/processes-go.sh /bin
 COPY files/create-topics.sh /bin
 COPY files/trifecta-add-groups.sh /bin
-
+COPY files/log-consumer-groups.sh /bin
 COPY files/config.properties /root/.trifecta/
 
 RUN apk add screen && \
@@ -35,7 +35,9 @@ RUN apk add screen && \
     ln -s /var/trifecta-ui/logs /opt/trifecta-ui/logs && \
     chmod 777 /bin/processes-go.sh && \
     chmod 777 /bin/create-topics.sh && \
-    chmod 777 /bin/trifecta-add-groups.sh
+    chmod 777 /bin/trifecta-add-groups.sh && \
+    chmod 777 /bin/log-consumer-groups.sh && \
+    echo "init log" >> /var/kafka/logs/consumer_groups.log
 
 COPY files/zoo.cfg /opt/zookeeper/conf/
 COPY files/server.properties /opt/kafka/config/
