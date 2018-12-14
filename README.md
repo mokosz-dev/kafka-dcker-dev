@@ -11,7 +11,7 @@ services:
     - 9000:9000
     environment:
       KAFKA_CREATE_TOPICS: "Topic1:2,Topic2:2" # <topic name : partitions>,<topic name : partitions>
-      CONSUMER_GROUPS: "dev,test,prod" # trifecta.kafka.consumers.native=dev,test,prod
+      CONSUMER_GROUPS: "dev,test,prod" # describe consumer groups stat to console
     volumes:
     - /data/zookeeper:/data/zookeeper
     - /var/zookeeper/datalog:/var/zookeeper/datalog
