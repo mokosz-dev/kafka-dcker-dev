@@ -35,7 +35,7 @@ screen -dmS createTopicsScreen create-topics.sh
 
 count=0
 timeout=600
-while [! -f /var/kafka/logs/server.log] && [! -f /var/zookeeper/logs/zookeeper.out] && [! -f /var/trifecta-ui/logs/application.log]; do
+while [ ! -f /var/kafka/logs/server.log ] && [ ! -f /var/zookeeper/logs/zookeeper.out ] && [ ! -f /var/trifecta-ui/logs/application.log ]; do
     echo "waiting for kafka to be ready"
     sleep 10;
     count=$((count + 10))
