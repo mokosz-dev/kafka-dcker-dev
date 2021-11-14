@@ -35,10 +35,13 @@ IFS=","; for topicToCreate in $KAFKA_CREATE_TOPICS; do
     IFS=':' read -r -a topicConfig <<< "$topicToCreate"
     COMMAND="JMX_PORT='' kafka-topics.sh \\
 		--create \\
-		--zookeeper localhost:2181 \\
+		--bootstrap-server localhost:9092,localhost:9192,localhost:9292 \\
 		--topic ${topicConfig[0]} \\
 		--partitions ${topicConfig[1]} \\
-		--replication-factor 1 &"
+		--replication-factor 3 \\
+		--config retention.ms=604800000 \\
+		--config min.insync.replicas=2 &"
+		echo "${COMMAND}"
     eval "${COMMAND}"
 done
 

@@ -1,51 +1,38 @@
-FROM mokosz/os-alpine:1
+FROM openjdk:18-ea-jdk-alpine3.13
 
 LABEL mintainer ="Rafał Kałuziński <rafa.kaluzinski@gmail.com>"
-LABEL description ="kafka 2.11-2.1.0 & zookeeper 3.4.12 & trifecta-ui 0.22.0rc8b-0.10.1.0"
+LABEL description ="kafka 2.13-3.0.0 only by test"
 
-COPY files/processes-go.sh /bin
-COPY files/create-topics.sh /bin
-COPY files/trifecta-add-groups.sh /bin
-COPY files/log-consumer-groups.sh /bin
-COPY files/config.properties /root/.trifecta/
+COPY --chmod=777 files/processes-go.sh /bin
+COPY --chmod=777 files/create-topics.sh /bin
+COPY --chmod=777 files/log-consumer-groups.sh /bin
+COPY --chmod=777 files/zookeeper-run.sh /bin
+COPY --chmod=777 files/kafka-0-run.sh /bin
+COPY --chmod=777 files/kafka-1-run.sh /bin
+COPY --chmod=777 files/kafka-2-run.sh /bin
 
-RUN apk add screen && \
-    apk add wget unzip && \
+RUN apk add --no-cache screen && \
+    apk add --no-cache wget unzip && \
+    apk add --no-cache bash && \
     cd /opt && \
-    wget https://www-us.apache.org/dist/kafka/2.1.0/kafka_2.11-2.1.0.tgz  -O kafka.tgz && \
+    wget https://dlcdn.apache.org/kafka/3.0.0/kafka_2.13-3.0.0.tgz  -O kafka.tgz && \
     tar -xzvf /opt/kafka.tgz && \
-    mv -n /opt/kafka_2.11-2.1.0 /opt/kafka && \
+    mv -n /opt/kafka_2.13-3.0.0 /opt/kafka && \
     rm -r /opt/kafka.tgz && \
-    wget http://ftp.man.poznan.pl/apache/zookeeper/zookeeper-3.4.12/zookeeper-3.4.12.tar.gz  -O zookeeper.tar.gz && \
-    tar -xzvf /opt/zookeeper.tar.gz && \
-    mv -n /opt/zookeeper-3.4.12 /opt/zookeeper && \
-    rm -r /opt/zookeeper.tar.gz && \
-    wget https://github.com/ldaniels528/trifecta/releases/download/v0.22.0rc8-0.10.1.0/trifecta-ui-0.22.0rc8b-0.10.1.0.zip -O trifecta-ui.zip && \
-    unzip /opt/trifecta-ui.zip && \
-    mv -n /opt/trifecta-ui-0.22.0rc8b-0.10.1.0 /opt/trifecta-ui && \
-    rm -r /opt/trifecta-ui.zip && \
-    apk del wget unzip && \
-    ln -s /opt/zookeeper/conf/ /etc/zookeeper && \
-    mkdir -p /data/zookeeper/ /var/zookeeper/datalog /var/zookeeper/logs && \
-    ln -s /opt/kafka/config/ /etc/kafka && \
-    mkdir -p /var/kafka/logs /data/kafka && \
-    ln -s /var/kafka/logs /opt/kafka/logs && \
-    ln -s /opt/trifecta-ui/conf/ /etc/trifecta-ui && \
-    mkdir -p /var/trifecta-ui/logs && \
-    ln -s /var/trifecta-ui/logs /opt/trifecta-ui/logs && \
-    chmod 777 /bin/processes-go.sh && \
-    chmod 777 /bin/create-topics.sh && \
-    chmod 777 /bin/trifecta-add-groups.sh && \
-    chmod 777 /bin/log-consumer-groups.sh && \
+    mkdir -p /var/kafka/logs/server_0 /var/kafka/logs/server_1 /var/kafka/logs/server_2 /data/kafka/server_0 /data/kafka/server_1 /data/kafka/server_2 && \
+    mkdir -p /data/zookeeper && \
     echo "init log" >> /var/kafka/logs/consumer_groups.log
 
-COPY files/zoo.cfg /opt/zookeeper/conf/
-COPY files/server.properties /opt/kafka/config/
+COPY files/server_0.properties /opt/kafka/config/
+COPY files/server_1.properties /opt/kafka/config/
+COPY files/server_2.properties /opt/kafka/config/
+COPY files/zookeeper_0.properties /opt/kafka/config/
 
-ENV PATH=$PATH:/opt/trifecta-ui/bin:/opt/kafka/bin:/opt/zookeeper/bin
 
-EXPOSE 2181 9092 9000
-VOLUME ["/data/zookeeper", "/var/zookeeper/datalog", "/var/zookeeper/logs", "/var/kafka/logs", "/data/kafka", "/var/trifecta-ui/logs"]
+ENV PATH=$PATH:/opt/kafka/bin
+
+EXPOSE 2181 9092 9192 9292
+VOLUME ["/data/zookeeper", "/var/kafka/logs", "/data/kafka"]
 
 CMD ["processes-go.sh"]
 

@@ -1,35 +1,14 @@
 #!/bin/bash
 
-cd /var/zookeeper/logs && zkServer.sh start /etc/zookeeper/zoo.cfg -D
-status=$?
-if [ $status -ne 0 ]; then
-  echo "Failed to start zkServer: $status"
-  exit $status
-else
-   echo "Starting zookeeper ... BEGIN STARTED in the background on port 2181"
-   sleep 3;
-fi
+echo "start zookeeper"
+screen -dmS zookeeper zookeeper-run.sh
 
-kafka-server-start.sh -daemon /etc/kafka/server.properties
-status=$?
-if [ $status -ne 0 ]; then
-  echo "Failed to start kafka: $status"
-  exit $status
-else
-   echo "Starting kafka ... BEGIN STARTED in the background on port 9092"
-    sleep 3;
-fi
+sleep 10;
 
-trifecta-add-groups.sh
-screen -dmS trifectaScreen trifecta-ui
-status=$?
-if [ $status -ne 0 ]; then
-  echo "Failed to start trifecta: $status"
-  exit $status
-else
-    echo "Starting trifecta-ui ... BEGIN STARTED in the background on port 9000"
-    sleep 3;
-fi
+echo "start kafka servers"
+screen -dmS kafka_0 kafka-0-run.sh
+screen -dmS kafka_1 kafka-1-run.sh
+screen -dmS kafka_2 kafka-2-run.sh
 
 screen -dmS createTopicsScreen create-topics.sh
 
@@ -37,7 +16,7 @@ screen -dmS logConsumerScreen log-consumer-groups.sh
 
 count=0
 timeout=600
-while [ ! -f /var/kafka/logs/server.log ] && [ ! -f /var/zookeeper/logs/zookeeper.out ] && [ ! -f /var/trifecta-ui/logs/application.log ]; do
+while [ ! -f /var/kafka/logs/server_0/server.log ] && [ ! -f /var/kafka/logs/server_1/server.log ] && [ ! -f /var/kafka/logs/server_1/server.log ]; do
     echo "waiting for kafka to be ready"
     sleep 10;
     count=$((count + 10))
@@ -46,4 +25,4 @@ while [ ! -f /var/kafka/logs/server.log ] && [ ! -f /var/zookeeper/logs/zookeepe
     fi
 done
 
-tail -f /var/kafka/logs/server.log -f /var/zookeeper/logs/zookeeper.out -f /var/trifecta-ui/logs/application.log -f /var/kafka/logs/consumer_groups.log
+tail -f /var/kafka/logs/server_0/server.log -f /var/kafka/logs/server_1/server.log -f /var/kafka/logs/server_2/server.log -f /var/kafka/logs/consumer_groups.log
