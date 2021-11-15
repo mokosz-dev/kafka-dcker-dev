@@ -5,6 +5,7 @@ LABEL description ="kafka 2.13-3.0.0 only by test"
 
 COPY --chmod=777 files/processes-go.sh /bin
 COPY --chmod=777 files/create-topics.sh /bin
+COPY --chmod=777 files/create-compact-topics.sh /bin
 COPY --chmod=777 files/log-consumer-groups.sh /bin
 COPY --chmod=777 files/zookeeper-run.sh /bin
 COPY --chmod=777 files/kafka-0-run.sh /bin

@@ -11,6 +11,7 @@ screen -dmS kafka_1 kafka-1-run.sh
 screen -dmS kafka_2 kafka-2-run.sh
 
 screen -dmS createTopicsScreen create-topics.sh
+screen -dmS createCompactTopicsScreen create-compact-topics.sh
 
 screen -dmS logConsumerScreen log-consumer-groups.sh
 
